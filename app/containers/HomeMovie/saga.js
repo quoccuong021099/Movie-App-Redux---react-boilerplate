@@ -1,6 +1,6 @@
 import axios from 'axios';
 import _get from 'lodash/get';
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { call, delay, put, takeLatest } from 'redux-saga/effects';
 import { API_KEY, API_URL, SEARCH_API } from '../../utils/config';
 import {
   getMoviesFailed,
@@ -11,15 +11,13 @@ import {
 import { GET_MOVIES, GET_SEARCH_RESULT, LOAD_MORE } from './constants';
 
 function fetchMovie(data) {
-  let { page } = data;
-  if (page === undefined) page = 1;
   let URL = `${API_URL}movie/popular?api_key=${API_KEY}&language=${
     data.lang
-  }&page=${page}`;
+  }&page=${data.page}`;
   if (data.query.length > 0)
-    URL = `${SEARCH_API}&language=${data.lang}&query=${
-      data.query
-    }&page=${page}`;
+    URL = `${SEARCH_API}&language=${data.lang}&query=${data.query}&page=${
+      data.page
+    }`;
   return axios({
     method: 'GET',
     url: URL,
@@ -39,6 +37,7 @@ function* getMoviesSagaFunc({ data }) {
   try {
     const response = yield call(fetchMovie, data);
     const movieData = _get(response, 'data', {});
+    yield delay(500);
     if (movieData) {
       yield put(getMoviesSuccess(movieData));
     } else {
@@ -70,7 +69,7 @@ function* searchSaga({ data }) {
       const movieData = _get(response, 'data', {});
       yield put(getMoviesSuccess(movieData));
     } else {
-      const data1 = { lang: 'en-US', page: 1 };
+      const data1 = { lang: 'en-US', page: 1, query: '' };
       const response1 = yield call(fetchMovie, data1);
       const movieData1 = _get(response1, 'data', {});
       if (movieData1) {

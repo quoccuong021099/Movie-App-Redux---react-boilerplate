@@ -20,10 +20,15 @@ const makeSelectDetailMoive = () =>
     selectDetailMoiveDomain,
     substate => substate.detailMovie,
   );
+const makeSelectStatusFlags = () =>
+  createSelector(
+    selectDetailMoiveDomain,
+    substate => substate.statusFlags,
+  );
 const makeSelectActor = () =>
   createSelector(
     selectDetailMoiveDomain,
     substate => substate.actors,
   );
 
-export { makeSelectDetailMoive, makeSelectActor };
+export { makeSelectDetailMoive, makeSelectActor, makeSelectStatusFlags };

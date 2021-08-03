@@ -1,5 +1,6 @@
 // import PropTypes from 'prop-types';
 import { Box, Button, Grid, makeStyles, TextField } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 import _debounce from 'lodash/debounce';
 import _trim from 'lodash/trim';
 import PropTypes from 'prop-types';
@@ -20,6 +21,7 @@ import saga from './saga';
 import makeSelectHomeMovie, {
   makeSelectCurrentPage,
   makeSelectDetailMovie,
+  makeSelectIsSuccessHomeMovie,
   makeSelectTotalPage,
 } from './selectors';
 const useStyles = makeStyles(() => ({
@@ -55,16 +57,16 @@ export function HomeMovie({
   currentPage,
   totalPage,
   triggerSearch,
+  statusFlag,
 }) {
   useInjectReducer({ key: 'homeMovie', reducer });
   useInjectSaga({ key: 'homeMovie', saga });
-
   const classes = useStyles();
   const [searchValue, setSearchValue] = useState('');
 
   useEffect(() => {
     triggerListMovie({ lang: 'en-US', page: 1, query: searchValue });
-  }, []);
+  }, [triggerSearch]);
 
   const handleLoadMore = () => {
     triggerLoadMore({
@@ -77,10 +79,11 @@ export function HomeMovie({
   const delayedQuery = useCallback(
     _debounce(valueSearch => {
       // trigger call API
+      console.log(currentPage);
       triggerSearch({
         lang: 'en-US',
         query: valueSearch,
-        page: currentPage + 1,
+        page: 1,
       });
     }, 500),
     [],
@@ -103,22 +106,20 @@ export function HomeMovie({
         onChange={getValueInput}
       />
       <Grid container spacing={1}>
-        {listMovie.length > 0 &&
-          listMovie.map(i => (
-            <Grid
-              item
-              xs={12}
-              sm={4}
-              md={3}
-              lg={2}
-              key={`${i.title}${i.id}`}
-              // onClick={() => handleDetail(i.id)}
-            >
-              <Link to={`/${i.id}`}>
-                <CardMovie img={i.poster_path} alt={i.title} name={i.title} />
-              </Link>
-            </Grid>
-          ))}
+        {statusFlag.isLoading
+          ? Array.from(new Array(12)).map((i, index) => (
+              <Grid item xs={12} sm={4} md={3} lg={2} key={`a-${index}`}>
+                <Skeleton variant="rect" width="100%" height={426} />
+              </Grid>
+            ))
+          : listMovie.length > 0 &&
+            listMovie.map(i => (
+              <Grid item xs={12} sm={4} md={3} lg={2} key={`${i.title}${i.id}`}>
+                <Link to={`/${i.id}`}>
+                  <CardMovie img={i.poster_path} alt={i.title} name={i.title} />
+                </Link>
+              </Grid>
+            ))}
       </Grid>
       <Box className={classes.box}>
         {currentPage < totalPage && (
@@ -143,12 +144,14 @@ HomeMovie.propTypes = {
   DetailMovie: PropTypes.any,
   currentPage: PropTypes.number,
   totalPage: PropTypes.number,
+  statusFlag: PropTypes.object,
 };
 
 const mapStateToProps = createStructuredSelector({
   listMovie: makeSelectHomeMovie(),
   currentPage: makeSelectCurrentPage(),
   totalPage: makeSelectTotalPage(),
+  statusFlag: makeSelectIsSuccessHomeMovie(),
 });
 
 function mapDispatchToProps(dispatch) {

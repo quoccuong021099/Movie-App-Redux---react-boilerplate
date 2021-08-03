@@ -1,7 +1,7 @@
 // import { take, call, put, select } from 'redux-saga/effects';
 
 import axios from 'axios';
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { call, delay, put, takeLatest } from 'redux-saga/effects';
 import _get from 'lodash/get';
 import { API_KEY, API_URL } from '../../utils/config';
 import { GET_DETAIL_MOVIES } from './constants';
@@ -28,6 +28,7 @@ function* getDetailsMoviesSagaFunc({ data }) {
     const responseActor = yield call(fetchActor, data);
     const detailData = yield _get(response, 'data', {});
     const actor = yield _get(responseActor, 'data', {});
+    yield delay(500);
     if (detailData) {
       yield put(getDetailMoviesSuccess({ detailData, actor }));
     } else {

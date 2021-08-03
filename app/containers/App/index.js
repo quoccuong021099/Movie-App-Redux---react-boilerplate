@@ -3,7 +3,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
-import DetailMoive from '../DetailMoive';
+import DetailMoive from '../DetailMoive/Loadable';
 import HomeMovie from '../HomeMovie/Loadable';
 const useStyles = makeStyles(() => ({
   container: {

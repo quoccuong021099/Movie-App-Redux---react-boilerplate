@@ -1,7 +1,7 @@
 const API_URL = 'https://api.themoviedb.org/3/';
 const API_KEY = '844dba0bfd8f3a4f3799f6130ef9e335';
 const IMAGE_BASE_URL = 'http://image.tmdb.org/t/p/';
-const BACKDROP_SIZE = 'w1280';
+const BACKDROP_SIZE = 'original';
 const POSTER_SIZE = 'w500';
 const SEARCH_API =
   'https://api.themoviedb.org/3/search/movie?api_key=844dba0bfd8f3a4f3799f6130ef9e335';

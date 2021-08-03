@@ -1,5 +1,6 @@
-import { AppBar, Button, Link, makeStyles, Toolbar } from '@material-ui/core';
+import { AppBar, Button, makeStyles, Toolbar } from '@material-ui/core';
 import React, { memo } from 'react';
+import { Link } from 'react-router-dom';
 import Logo from '../Logo';
 
 const useStyles = makeStyles(theme => ({
