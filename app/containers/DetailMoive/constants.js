@@ -1,0 +1,9 @@
+/*
+ *
+ * DetailMoive constants
+ *
+ */
+
+export const GET_DETAIL_MOVIES = 'GET_DETAIL_MOVIES';
+export const GET_DETAIL_MOVIES_SUCCESS = 'GET_DETAIL_MOVIES_SUCCESS';
+export const GET_DETAIL_MOVIES_FAILED = 'GET_DETAIL_MOVIES_FAILED';

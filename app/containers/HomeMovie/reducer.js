@@ -1,21 +1,23 @@
 import produce from 'immer';
 import {
   GET_MOVIES,
-  GET_MOVIES_SUCCESS,
   GET_MOVIES_FAILED,
+  GET_MOVIES_SUCCESS,
   LOAD_MORE,
-  LOAD_MORE_SUCCESS,
   LOAD_MORE_FAILED,
+  LOAD_MORE_SUCCESS,
 } from './constants';
 
 export const initialState = {
   listMovie: [],
   currentPage: 0,
   totalPage: 0,
+  detailMovie: null,
   statusFlags: {
     isLoading: false,
     isGetMovieSuccess: false,
     isLoadMoreSuccess: false,
+    // isListSearchSuccess: false,
   },
   logs: {
     error: '',

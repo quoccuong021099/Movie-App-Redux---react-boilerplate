@@ -1,8 +1,10 @@
 import { Box, makeStyles, Paper, Typography } from '@material-ui/core';
 import { PropTypes } from 'prop-types';
 import React, { memo } from 'react';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 import { DEFAULT_IMAGE, IMAGE_BASE_URL, POSTER_SIZE } from '../../utils/config';
-// import { Link } from 'react-router-dom';
+
 const useStyles = makeStyles(() => ({
   paper: {
     textAlign: 'center',
@@ -22,10 +24,8 @@ const useStyles = makeStyles(() => ({
 
 function CardMovie({ img, alt, name }) {
   const classes = useStyles();
-
   return (
     <Box p={1}>
-      {/* <Link to="/a"> */}
       <Paper className={classes.paper}>
         <Box>
           <img
@@ -34,11 +34,10 @@ function CardMovie({ img, alt, name }) {
             alt={alt}
           />
         </Box>
-        <Typography variant="h4" className={classes.typo}>
+        <Typography variant="subtitle1" className={classes.typo}>
           {name}
         </Typography>
       </Paper>
-      {/* </Link> */}
     </Box>
   );
 }
@@ -48,5 +47,11 @@ CardMovie.propTypes = {
   alt: PropTypes.string,
   name: PropTypes.string,
 };
-
-export default memo(CardMovie);
+const withConnect = connect(
+  null,
+  null,
+);
+export default compose(
+  withConnect,
+  memo,
+)(CardMovie);

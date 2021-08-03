@@ -1,9 +1,9 @@
 import { Container, makeStyles } from '@material-ui/core';
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
-import Details from '../Details/Loadable';
+import DetailMoive from '../DetailMoive';
 import HomeMovie from '../HomeMovie/Loadable';
 const useStyles = makeStyles(() => ({
   container: {
@@ -22,7 +22,7 @@ export default function App() {
       <Container className={classes.container}>
         <Switch>
           <Route exact path="/" component={HomeMovie} />
-          <Route exact path="/details" component={Details} />
+          <Route path="/:id" component={DetailMoive} />
         </Switch>
       </Container>
       <Footer />

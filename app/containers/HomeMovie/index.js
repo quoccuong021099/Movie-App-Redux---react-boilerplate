@@ -1,8 +1,11 @@
 // import PropTypes from 'prop-types';
-import { Box, Button, Grid, makeStyles } from '@material-ui/core';
+import { Box, Button, Grid, makeStyles, TextField } from '@material-ui/core';
+import _debounce from 'lodash/debounce';
+import _trim from 'lodash/trim';
 import PropTypes from 'prop-types';
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import 'slick-carousel/slick/slick-theme.css';
@@ -11,11 +14,12 @@ import CardMovie from '../../components/CardMovie';
 import Introduce from '../../components/Introduce';
 import { useInjectReducer } from '../../utils/injectReducer';
 import { useInjectSaga } from '../../utils/injectSaga';
-import { getMovies, loadMore } from './actions';
+import { getMovies, getSearchResult, loadMore } from './actions';
 import reducer from './reducer';
 import saga from './saga';
 import makeSelectHomeMovie, {
   makeSelectCurrentPage,
+  makeSelectDetailMovie,
   makeSelectTotalPage,
 } from './selectors';
 const useStyles = makeStyles(() => ({
@@ -36,6 +40,12 @@ const useStyles = makeStyles(() => ({
       backgroundColor: '#9f060e',
     },
   },
+  textField: {
+    width: '50%',
+    margin: '50px 0',
+    backgroundColor: '#fff',
+    borderRadius: '5px',
+  },
 }));
 
 export function HomeMovie({
@@ -44,27 +54,69 @@ export function HomeMovie({
   triggerLoadMore,
   currentPage,
   totalPage,
+  triggerSearch,
 }) {
   useInjectReducer({ key: 'homeMovie', reducer });
   useInjectSaga({ key: 'homeMovie', saga });
+
   const classes = useStyles();
+  const [searchValue, setSearchValue] = useState('');
 
   useEffect(() => {
-    triggerListMovie({ lang: 'en-US', page: 1 });
+    triggerListMovie({ lang: 'en-US', page: 1, query: searchValue });
   }, []);
 
   const handleLoadMore = () => {
-    triggerLoadMore({ lang: 'en-US', page: currentPage + 1 });
+    triggerLoadMore({
+      lang: 'en-US',
+      page: currentPage + 1,
+      query: searchValue,
+    });
+  };
+
+  const delayedQuery = useCallback(
+    _debounce(valueSearch => {
+      // trigger call API
+      triggerSearch({
+        lang: 'en-US',
+        query: valueSearch,
+        page: currentPage + 1,
+      });
+    }, 500),
+    [],
+  );
+
+  const getValueInput = e => {
+    setSearchValue(e.target.value);
+    delayedQuery(_trim(e.target.value));
   };
 
   return (
     <Box className={classes.root}>
       <Introduce />
+      <TextField
+        className={classes.textField}
+        size="medium"
+        placeholder="Tìm kiếm phim"
+        value={searchValue}
+        variant="outlined"
+        onChange={getValueInput}
+      />
       <Grid container spacing={1}>
         {listMovie.length > 0 &&
           listMovie.map(i => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={`${i.title}${i.id}`}>
-              <CardMovie img={i.poster_path} alt={i.title} name={i.title} />
+            <Grid
+              item
+              xs={12}
+              sm={4}
+              md={3}
+              lg={2}
+              key={`${i.title}${i.id}`}
+              // onClick={() => handleDetail(i.id)}
+            >
+              <Link to={`/${i.id}`}>
+                <CardMovie img={i.poster_path} alt={i.title} name={i.title} />
+              </Link>
             </Grid>
           ))}
       </Grid>
@@ -87,7 +139,8 @@ export function HomeMovie({
 HomeMovie.propTypes = {
   listMovie: PropTypes.any,
   triggerListMovie: PropTypes.func,
-  triggerLoadMore: PropTypes.func,
+  triggerDetailMovie: PropTypes.func,
+  DetailMovie: PropTypes.any,
   currentPage: PropTypes.number,
   totalPage: PropTypes.number,
 };
@@ -102,6 +155,7 @@ function mapDispatchToProps(dispatch) {
   return {
     triggerListMovie: data => dispatch(getMovies(data)),
     triggerLoadMore: data => dispatch(loadMore(data)),
+    triggerSearch: data => dispatch(getSearchResult(data)),
   };
 }
 

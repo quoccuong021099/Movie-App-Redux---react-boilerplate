@@ -1,10 +1,11 @@
 import {
   GET_MOVIES,
-  GET_MOVIES_SUCCESS,
   GET_MOVIES_FAILED,
+  GET_MOVIES_SUCCESS,
+  GET_SEARCH_RESULT,
   LOAD_MORE,
-  LOAD_MORE_SUCCESS,
   LOAD_MORE_FAILED,
+  LOAD_MORE_SUCCESS,
 } from './constants';
 
 export function getMovies(data) {
@@ -41,6 +42,13 @@ export function loadMoreSuccess(payload) {
 export function loadMoreFailed(data) {
   return {
     type: LOAD_MORE_FAILED,
+    data,
+  };
+}
+
+export function getSearchResult(data) {
+  return {
+    type: GET_SEARCH_RESULT,
     data,
   };
 }

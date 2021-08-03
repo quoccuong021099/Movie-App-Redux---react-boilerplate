@@ -1,9 +1,9 @@
 // import produce from 'immer';
-import detailsReducer from '../reducer';
+import detailMoiveReducer from '../reducer';
 // import { someAction } from '../actions';
 
 /* eslint-disable default-case, no-param-reassign */
-describe('detailsReducer', () => {
+describe('detailMoiveReducer', () => {
   let state;
   beforeEach(() => {
     state = {
@@ -13,7 +13,7 @@ describe('detailsReducer', () => {
 
   it('returns the initial state', () => {
     const expectedResult = state;
-    expect(detailsReducer(undefined, {})).toEqual(expectedResult);
+    expect(detailMoiveReducer(undefined, {})).toEqual(expectedResult);
   });
 
   /**
