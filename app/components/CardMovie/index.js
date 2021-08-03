@@ -15,7 +15,7 @@ const useStyles = makeStyles(() => ({
   },
   img: {
     width: '100%',
-    height: 'auto',
+    height: '426px',
   },
   typo: {
     paddingTop: '30px',

@@ -1,5 +1,13 @@
 // import PropTypes from 'prop-types';
-import { Box, Button, Grid, makeStyles, TextField } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  Grid,
+  InputAdornment,
+  makeStyles,
+  TextField,
+} from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
 import { Autocomplete, Skeleton } from '@material-ui/lab';
 import _debounce from 'lodash/debounce';
 import _trim from 'lodash/trim';
@@ -101,8 +109,8 @@ export function HomeMovie({
   return (
     <Box className={classes.root}>
       <Introduce />
-      <Grid container spacing={1}>
-        <Grid item xs={8}>
+      <Grid container spacing={0} justifyContent="space-between">
+        <Grid item xs={12} sm={6} md={6} lg={4}>
           <TextField
             size="small"
             className={classes.textField}
@@ -110,9 +118,16 @@ export function HomeMovie({
             value={searchValue}
             variant="outlined"
             onChange={getValueInput}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={12} sm={2} md={2} lg={1}>
           <Autocomplete
             value={valueOption}
             options={LANGUAGE}
@@ -122,7 +137,7 @@ export function HomeMovie({
               <TextField
                 {...params}
                 variant="outlined"
-                placeholder="Chọn ngôn ngữ"
+                placeholder="Eng"
                 className={classes.textField}
               />
             )}
