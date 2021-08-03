@@ -1,27 +1,34 @@
-import React, { memo, useEffect } from 'react';
+import {
+  Box,
+  Card,
+  CardContent,
+  CardMedia,
+  Grid,
+  makeStyles,
+  Typography,
+} from '@material-ui/core';
+import { Rating, Skeleton } from '@material-ui/lab';
 import PropTypes from 'prop-types';
+import React, { memo, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
-import reducer from './reducer';
-import saga from './saga';
 import { useParams } from 'react-router-dom';
+import { compose } from 'redux';
+import { createStructuredSelector } from 'reselect';
+import {
+  BACKDROP_SIZE,
+  DEFAULT_IMAGE,
+  IMAGE_BASE_URL,
+} from '../../utils/config';
 import { useInjectReducer } from '../../utils/injectReducer';
 import { useInjectSaga } from '../../utils/injectSaga';
 import { getDetailMovies } from './actions';
+import reducer from './reducer';
+import saga from './saga';
 import {
   makeSelectActor,
   makeSelectDetailMoive,
   makeSelectStatusFlags,
 } from './selectors';
-import { Box, Grid, makeStyles, Typography } from '@material-ui/core';
-import {
-  BACKDROP_SIZE,
-  DEFAULT_IMAGE,
-  IMAGE_BASE_URL,
-  POSTER_SIZE,
-} from '../../utils/config';
-import { Rating, Skeleton } from '@material-ui/lab';
 const useStyles = makeStyles(() => ({
   root: {
     minHeight: '90vh',
@@ -40,12 +47,23 @@ const useStyles = makeStyles(() => ({
     padding: '30px',
     color: '#fff',
   },
-  actor: {
-    width: '185px',
-    height: '185px',
+  card: {
+    display: 'flex',
+    height: '100%',
+    width: '100%',
+    wordBreak: 'break-word',
   },
-  name: {
-    padding: '30px',
+  details: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  content: {
+    flex: '1 0 auto',
+  },
+  cover: {
+    width: '100%',
+    height: 151,
+    backgroundSize: 'cover',
   },
 }));
 export function DetailMoive({
@@ -119,7 +137,7 @@ export function DetailMoive({
                     </Typography>
                     <Grid container spacing={1}>
                       {detailMoive.production_companies.map((i, index) => (
-                        <Grid item xs={3} key={index}>
+                        <Grid item xs={3} key={(() => `index${index}`)()}>
                           <Typography gutterBottom variant="body2">
                             {i.name}
                           </Typography>
@@ -149,7 +167,7 @@ export function DetailMoive({
                   </Grid>
                   <Grid item xs={12}>
                     <Typography gutterBottom variant="body2">
-                      Ngày xuất bản: {detailMoive.release_date}
+                      RELEASE DATE: {detailMoive.release_date}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -159,30 +177,60 @@ export function DetailMoive({
         )
       )}
       <Box my={5} color="#fff" backgroundcolor="rgba(255,255,255,0.5)">
-        <Grid container spacing={3}>
-          {statusFlags.isLoading
-            ? Array.from(new Array(12)).map((i, index) => (
-                <Grid item xs={3} key={`a-${index}`}>
-                  <Skeleton variant="rect" width="100%" height="185px" />
-                </Grid>
-              ))
-            : actors &&
-              actors.cast.map((i, index) => (
-                <Grid item xs={3} key={index} className={classes.actorItem}>
-                  <img
-                    src={
-                      i.profile_path
-                        ? `${IMAGE_BASE_URL}w185${i.profile_path}`
-                        : DEFAULT_IMAGE
-                    }
-                    alt={i.original_name}
-                    className={classes.actor}
-                  />
-                  <span color="inherit" className={classes.name}>
-                    {i.character}
-                  </span>
-                </Grid>
-              ))}
+        <Grid container spacing={2}>
+          {statusFlags.isLoading ? (
+            Array.from(new Array(12)).map((i, index) => (
+              <Grid
+                item
+                xs={6}
+                sm={4}
+                md={3}
+                lg={2}
+                key={(() => `index${index}`)()}
+              >
+                <Skeleton variant="rect" width="100%" height="185px" />
+              </Grid>
+            ))
+          ) : (
+            <>
+              {actors &&
+                actors.cast.map((i, index) => (
+                  <Grid
+                    item
+                    xs={6}
+                    sm={4}
+                    md={3}
+                    lg={2}
+                    key={(() => `index${index}`)()}
+                    className={classes.actorItem}
+                  >
+                    <Box height="100%" width="100%">
+                      <Card className={classes.card}>
+                        <div className={classes.details}>
+                          <CardContent className={classes.content}>
+                            <CardMedia
+                              className={classes.cover}
+                              image={
+                                i.profile_path
+                                  ? `${IMAGE_BASE_URL}w185${i.profile_path}`
+                                  : DEFAULT_IMAGE
+                              }
+                              title={i.character}
+                            />
+                            <Typography component="h5" variant="subtitle1">
+                              {i.original_name}
+                            </Typography>
+                            <Typography variant="body1" color="textSecondary">
+                              {i.character}
+                            </Typography>
+                          </CardContent>
+                        </div>
+                      </Card>
+                    </Box>
+                  </Grid>
+                ))}
+            </>
+          )}
         </Grid>
       </Box>
     </>

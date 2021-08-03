@@ -21,7 +21,6 @@ import reducer from './reducer';
 import saga from './saga';
 import makeSelectHomeMovie, {
   makeSelectCurrentPage,
-  makeSelectDetailMovie,
   makeSelectIsSuccessHomeMovie,
   makeSelectTotalPage,
 } from './selectors';
@@ -87,7 +86,7 @@ export function HomeMovie({
       // trigger call API
       triggerSearch({
         lang: valueOption && valueOption.lang,
-        query: query,
+        query,
         page: 1,
       });
     }, 500),
@@ -105,8 +104,8 @@ export function HomeMovie({
       <Grid container spacing={1}>
         <Grid item xs={8}>
           <TextField
+            size="small"
             className={classes.textField}
-            size="medium"
             placeholder="Tìm kiếm phim"
             value={searchValue}
             variant="outlined"
@@ -118,6 +117,7 @@ export function HomeMovie({
             value={valueOption}
             options={LANGUAGE}
             getOptionLabel={option => option.title}
+            size="small"
             renderInput={params => (
               <TextField
                 {...params}
@@ -133,20 +133,42 @@ export function HomeMovie({
         </Grid>
       </Grid>
       <Grid container spacing={1}>
-        {statusFlag.isLoading
-          ? Array.from(new Array(12)).map((i, index) => (
-              <Grid item xs={12} sm={4} md={3} lg={2} key={`a-${index}`}>
-                <Skeleton variant="rect" width="100%" height={426} />
-              </Grid>
-            ))
-          : listMovie.length > 0 &&
-            listMovie.map(i => (
-              <Grid item xs={12} sm={4} md={3} lg={2} key={`${i.title}${i.id}`}>
-                <Link to={`/${i.id}`}>
-                  <CardMovie img={i.poster_path} alt={i.title} name={i.title} />
-                </Link>
-              </Grid>
-            ))}
+        {statusFlag.isLoading ? (
+          Array.from(new Array(12)).map((i, index) => (
+            <Grid
+              item
+              xs={12}
+              sm={4}
+              md={3}
+              lg={2}
+              key={(() => `index${index}`)()}
+            >
+              <Skeleton variant="rect" width="100%" height={426} />
+            </Grid>
+          ))
+        ) : (
+          <>
+            {listMovie.length > 0 &&
+              listMovie.map(i => (
+                <Grid
+                  item
+                  xs={12}
+                  sm={4}
+                  md={3}
+                  lg={2}
+                  key={`${i.title}${i.id}`}
+                >
+                  <Link to={`/${i.id}`} style={{ textDecoration: 'none' }}>
+                    <CardMovie
+                      img={i.poster_path}
+                      alt={i.title}
+                      name={i.title}
+                    />
+                  </Link>
+                </Grid>
+              ))}
+          </>
+        )}
       </Grid>
       <Box className={classes.box}>
         {currentPage < totalPage && (
@@ -168,6 +190,8 @@ HomeMovie.propTypes = {
   listMovie: PropTypes.any,
   triggerListMovie: PropTypes.func,
   triggerDetailMovie: PropTypes.func,
+  triggerLoadMore: PropTypes.func,
+  triggerSearch: PropTypes.func,
   DetailMovie: PropTypes.any,
   currentPage: PropTypes.number,
   totalPage: PropTypes.number,
