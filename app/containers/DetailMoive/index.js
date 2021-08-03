@@ -1,12 +1,4 @@
-import {
-  Box,
-  Card,
-  CardContent,
-  CardMedia,
-  Grid,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
+import { Box, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
 import { Rating, Skeleton } from '@material-ui/lab';
 import PropTypes from 'prop-types';
 import React, { memo, useEffect } from 'react';
@@ -47,23 +39,20 @@ const useStyles = makeStyles(() => ({
     padding: '30px',
     color: '#fff',
   },
-  card: {
-    display: 'flex',
-    height: '100%',
+  actorItem: {
+    backgroundColor: 'rgba(0,0,0,.5)',
     width: '100%',
-    wordBreak: 'break-word',
-  },
-  details: {
+    height: '300px',
     display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     flexDirection: 'column',
   },
-  content: {
-    flex: '1 0 auto',
-  },
-  cover: {
+  Paper: {
+    height: '300px',
     width: '100%',
-    height: 151,
     backgroundSize: 'cover',
+    color: '#fff',
   },
 }));
 export function DetailMoive({
@@ -188,7 +177,7 @@ export function DetailMoive({
                 lg={2}
                 key={(() => `index${index}`)()}
               >
-                <Skeleton variant="rect" width="100%" height="185px" />
+                <Skeleton variant="rect" width="100%" height="300px" />
               </Grid>
             ))
           ) : (
@@ -202,31 +191,22 @@ export function DetailMoive({
                     md={3}
                     lg={2}
                     key={(() => `index${index}`)()}
-                    className={classes.actorItem}
                   >
-                    <Box height="100%" width="100%">
-                      <Card className={classes.card}>
-                        <div className={classes.details}>
-                          <CardContent className={classes.content}>
-                            <CardMedia
-                              className={classes.cover}
-                              image={
-                                i.profile_path
-                                  ? `${IMAGE_BASE_URL}w185${i.profile_path}`
-                                  : DEFAULT_IMAGE
-                              }
-                              title={i.character}
-                            />
-                            <Typography component="h5" variant="subtitle1">
-                              {i.original_name}
-                            </Typography>
-                            <Typography variant="body1" color="textSecondary">
-                              {i.character}
-                            </Typography>
-                          </CardContent>
-                        </div>
-                      </Card>
-                    </Box>
+                    <Paper
+                      className={classes.Paper}
+                      style={{
+                        backgroundImage: i.profile_path
+                          ? `url(${IMAGE_BASE_URL}w185${i.profile_path} )`
+                          : `url(${DEFAULT_IMAGE} )`,
+                      }}
+                    >
+                      <Box className={classes.actorItem}>
+                        <Typography variant="h5">{i.name}</Typography>
+                        <Typography variant="subtitle1">
+                          {i.original_name}
+                        </Typography>
+                      </Box>
+                    </Paper>
                   </Grid>
                 ))}
             </>
