@@ -69,7 +69,7 @@ function* searchSaga({ data }) {
       const movieData = _get(response, 'data', {});
       yield put(getMoviesSuccess(movieData));
     } else {
-      const data1 = { lang: 'en-US', page: 1, query: '' };
+      const data1 = { lang: data.lang, page: 1, query: '' };
       const response1 = yield call(fetchMovie, data1);
       const movieData1 = _get(response1, 'data', {});
       if (movieData1) {

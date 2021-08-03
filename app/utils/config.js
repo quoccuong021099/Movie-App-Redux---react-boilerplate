@@ -8,7 +8,12 @@ const SEARCH_API =
 
 const DEFAULT_IMAGE =
   'https://www.perfectweddingguide.com/wedding-blog/wp-content/uploads/sites/2/2020/03/SS-Jen-Menard-439x658.jpg';
+const LANGUAGE = [
+  { lang: 'en-US', id: 'en1', title: 'English' },
+  { lang: 'vi-Vn', id: 'vn2', title: 'Việt Nam' },
+];
 export {
+  LANGUAGE,
   SEARCH_API,
   API_URL,
   API_KEY,

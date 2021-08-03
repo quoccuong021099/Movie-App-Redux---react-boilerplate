@@ -158,7 +158,7 @@ export function DetailMoive({
           </div>
         )
       )}
-      <Box my={5} color="#fff" backgroundColor="rgba(255,255,255,0.5)">
+      <Box my={5} color="#fff" backgroundcolor="rgba(255,255,255,0.5)">
         <Grid container spacing={3}>
           {statusFlags.isLoading
             ? Array.from(new Array(12)).map((i, index) => (
@@ -178,13 +178,9 @@ export function DetailMoive({
                     alt={i.original_name}
                     className={classes.actor}
                   />
-                  <Typography
-                    variant="span"
-                    color="inherit"
-                    className={classes.name}
-                  >
+                  <span color="inherit" className={classes.name}>
                     {i.character}
-                  </Typography>
+                  </span>
                 </Grid>
               ))}
         </Grid>

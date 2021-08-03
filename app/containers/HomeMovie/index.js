@@ -1,6 +1,6 @@
 // import PropTypes from 'prop-types';
 import { Box, Button, Grid, makeStyles, TextField } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Autocomplete, Skeleton } from '@material-ui/lab';
 import _debounce from 'lodash/debounce';
 import _trim from 'lodash/trim';
 import PropTypes from 'prop-types';
@@ -13,6 +13,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
 import CardMovie from '../../components/CardMovie';
 import Introduce from '../../components/Introduce';
+import { LANGUAGE } from '../../utils/config';
 import { useInjectReducer } from '../../utils/injectReducer';
 import { useInjectSaga } from '../../utils/injectSaga';
 import { getMovies, getSearchResult, loadMore } from './actions';
@@ -43,7 +44,7 @@ const useStyles = makeStyles(() => ({
     },
   },
   textField: {
-    width: '50%',
+    width: '100%',
     margin: '50px 0',
     backgroundColor: '#fff',
     borderRadius: '5px',
@@ -63,30 +64,34 @@ export function HomeMovie({
   useInjectSaga({ key: 'homeMovie', saga });
   const classes = useStyles();
   const [searchValue, setSearchValue] = useState('');
+  const [valueOption, setValueOption] = useState(null);
 
   useEffect(() => {
-    triggerListMovie({ lang: 'en-US', page: 1, query: searchValue });
-  }, [triggerSearch]);
+    triggerListMovie({
+      lang: (valueOption && valueOption.lang) || 'en-US',
+      page: 1,
+      query: searchValue,
+    });
+  }, [triggerSearch, valueOption]);
 
   const handleLoadMore = () => {
     triggerLoadMore({
-      lang: 'en-US',
+      lang: (valueOption && valueOption.lang) || 'en-US',
       page: currentPage + 1,
       query: searchValue,
     });
   };
 
   const delayedQuery = useCallback(
-    _debounce(valueSearch => {
+    _debounce(query => {
       // trigger call API
-      console.log(currentPage);
       triggerSearch({
-        lang: 'en-US',
-        query: valueSearch,
+        lang: valueOption && valueOption.lang,
+        query: query,
         page: 1,
       });
     }, 500),
-    [],
+    [valueOption],
   );
 
   const getValueInput = e => {
@@ -97,14 +102,36 @@ export function HomeMovie({
   return (
     <Box className={classes.root}>
       <Introduce />
-      <TextField
-        className={classes.textField}
-        size="medium"
-        placeholder="Tìm kiếm phim"
-        value={searchValue}
-        variant="outlined"
-        onChange={getValueInput}
-      />
+      <Grid container spacing={1}>
+        <Grid item xs={8}>
+          <TextField
+            className={classes.textField}
+            size="medium"
+            placeholder="Tìm kiếm phim"
+            value={searchValue}
+            variant="outlined"
+            onChange={getValueInput}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <Autocomplete
+            value={valueOption}
+            options={LANGUAGE}
+            getOptionLabel={option => option.title}
+            renderInput={params => (
+              <TextField
+                {...params}
+                variant="outlined"
+                placeholder="Chọn ngôn ngữ"
+                className={classes.textField}
+              />
+            )}
+            onChange={(event, newValue) => {
+              setValueOption(newValue);
+            }}
+          />
+        </Grid>
+      </Grid>
       <Grid container spacing={1}>
         {statusFlag.isLoading
           ? Array.from(new Array(12)).map((i, index) => (
